@@ -1,9 +1,11 @@
 import React from 'react';
 import { VictoryChart, VictoryLine, VictoryAxis } from 'victory';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 import { BsFillGearFill } from 'react-icons/bs';
 import Container from '../../components/Container';
 import Button from '../../components/Button';
+import constants from '../../constants/routes.json';
 
 const GraphsWrapper = styled.div`
   display: flex;
@@ -32,6 +34,18 @@ type Data = Array<Values>;
 type Datas = Array<Data>;
 
 const Homepage = () => {
+  const history = useHistory();
+
+  React.useEffect(() => {
+    function verifySplashed() {
+      const splashed = localStorage.getItem('splashed');
+      if (splashed === 'false' || !splashed)
+        history.push(constants.SPLASH_CONFIGURATIONS);
+    }
+
+    verifySplashed();
+  }, [history]);
+
   const [datas] = React.useState<Datas>([
     [
       { x: 1, y: 2 },
@@ -74,11 +88,17 @@ const Homepage = () => {
               right: 10,
               cursor: 'pointer',
             }}
+            onClick={() => history.push(constants.GRAPH_CONFIGURATIONS)}
           />
         </Graph>
       </GraphsWrapper>
       <Footer>
-        <Button style={{ height: '3rem', width: '8rem' }}>Configurar</Button>
+        <Button
+          onClick={() => history.push(constants.CONFIGURATIONS)}
+          style={{ height: '3rem', width: '8rem' }}
+        >
+          Configurar
+        </Button>
       </Footer>
     </Container>
   );

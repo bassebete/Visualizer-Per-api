@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   height: 100vh;
   background-color: #222222;
   font-family: Arial, Helvetica, Helvetica Neue, serif;
-  overflow-y: hidden;
+  overflow: hidden;
   padding: 1rem;
   display: flex;
   flex-direction: column;

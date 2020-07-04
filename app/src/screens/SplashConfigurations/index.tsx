@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
 import Input from '../../components/Input';
 import TextArea from '../../components/TextArea';
 import Button from '../../components/Button';
+import constants from '../../constants/routes.json';
 
 const Form = styled.div`
   display: flex;
@@ -14,6 +16,7 @@ const Form = styled.div`
 `;
 
 const SplashConfiguration = () => {
+  const history = useHistory();
   return (
     <Container>
       <Form>
@@ -22,8 +25,16 @@ const SplashConfiguration = () => {
         <p style={{ margin: '0 0 1rem 0' }}>
           Escreva linha a linha seus recursos get
         </p>
-        <TextArea />
-        <Button style={{ margin: '1rem' }}>Confirmar</Button>
+        <TextArea style={{ height: '25rem', margin: '0 0 2rem 0' }} />
+        <Button
+          onClick={() => {
+            localStorage.setItem('splashed', 'true');
+            history.push(constants.HOME);
+          }}
+          style={{ margin: '1rem' }}
+        >
+          Confirmar
+        </Button>
       </Form>
     </Container>
   );

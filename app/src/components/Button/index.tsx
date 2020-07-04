@@ -14,11 +14,17 @@ const ButtonSC = styled.button`
 const Button = ({
   children,
   style,
+  onClick,
 }: {
   children: ReactNode;
   style?: React.CSSProperties;
+  onClick?: () => void;
 }) => {
-  return <ButtonSC style={style}>{children}</ButtonSC>;
+  return (
+    <ButtonSC onClick={onClick} style={style}>
+      {children}
+    </ButtonSC>
+  );
 };
 
 export default Button;

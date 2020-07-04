@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
 const ButtonSC = styled.button`
@@ -11,8 +11,14 @@ const ButtonSC = styled.button`
   margin: ${(props) => props.style?.margin};
 `;
 
-const Button = ({ style }: { style?: React.CSSProperties }) => {
-  return <ButtonSC style={style}>Confirmar</ButtonSC>;
+const Button = ({
+  children,
+  style,
+}: {
+  children: ReactNode;
+  style?: React.CSSProperties;
+}) => {
+  return <ButtonSC style={style}>{children}</ButtonSC>;
 };
 
 export default Button;

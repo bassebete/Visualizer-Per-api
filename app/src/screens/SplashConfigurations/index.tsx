@@ -23,7 +23,7 @@ const SplashConfiguration = () => {
           Escreva linha a linha seus recursos get
         </p>
         <TextArea />
-        <Button style={{ margin: '1rem' }} />
+        <Button style={{ margin: '1rem' }}>Confirmar</Button>
       </Form>
     </Container>
   );

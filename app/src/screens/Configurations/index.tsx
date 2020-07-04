@@ -1,9 +1,14 @@
 import React from 'react';
+import Container from '../../components/Container';
 
 // import { Container } from './styles';
 
-const Configurations: React.FC = () => {
-  return <div />;
+const Configurations = () => {
+  return (
+    <Container>
+      <p>Configurations</p>
+    </Container>
+  );
 };
 
 export default Configurations;

@@ -1,9 +1,12 @@
 import React from 'react';
+import Container from '../../components/Container';
 
-// import { Container } from './styles';
-
-const GraphConfigurations: React.FC = () => {
-  return <div />;
+const GraphConfigurations = () => {
+  return (
+    <Container>
+      <p>GConfigurations</p>
+    </Container>
+  );
 };
 
 export default GraphConfigurations;

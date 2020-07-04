@@ -6,7 +6,6 @@ import { History } from 'history';
 import { ConnectedRouter } from 'connected-react-router';
 import { Provider } from 'react-redux';
 import routes from './constants/routes.json';
-import App from './App';
 import SplashConfiguration from './screens/SplashConfiguration';
 import { Store } from './stores/store';
 
@@ -17,11 +16,9 @@ type Props = {
 
 function Routes() {
   return (
-    <App>
-      <Switch>
-        <Route path={routes.HOME} component={SplashConfiguration} />
-      </Switch>
-    </App>
+    <Switch>
+      <Route path={routes.HOME} component={SplashConfiguration} />
+    </Switch>
   );
 }
 

@@ -9,6 +9,8 @@ const Wrapper = styled.div`
   font-family: Arial, Helvetica, Helvetica Neue, serif;
   overflow-y: hidden;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Container = ({ children }: { children: ReactNode }) => {

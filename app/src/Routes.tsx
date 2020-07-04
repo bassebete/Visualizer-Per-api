@@ -6,7 +6,7 @@ import { History } from 'history';
 import { ConnectedRouter } from 'connected-react-router';
 import { Provider } from 'react-redux';
 import routes from './constants/routes.json';
-import GraphConfigurations from './screens/GraphConfigurations';
+import Homepage from './screens/Homepage';
 import { Store } from './stores/store';
 
 type Props = {
@@ -17,7 +17,7 @@ type Props = {
 function Routes() {
   return (
     <Switch>
-      <Route path={routes.HOME} component={GraphConfigurations} />
+      <Route path={routes.HOME} component={Homepage} />
     </Switch>
   );
 }

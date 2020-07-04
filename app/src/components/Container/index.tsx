@@ -4,11 +4,8 @@ import styled from 'styled-components';
 const Wrapper = styled.div`
   position: relative;
   color: white;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
   height: 100vh;
-  background-color: #232c39;
+  background-color: #222222;
   font-family: Arial, Helvetica, Helvetica Neue, serif;
   overflow-y: hidden;
   padding: 1rem;

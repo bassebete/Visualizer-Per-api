@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, MouseEvent } from 'react';
 import styled from 'styled-components';
 
 const ButtonSC = styled.button`
@@ -18,7 +18,7 @@ const Button = ({
 }: {
   children: ReactNode;
   style?: React.CSSProperties;
-  onClick?: () => void;
+  onClick?: (event: MouseEvent) => void;
 }) => {
   return (
     <ButtonSC onClick={onClick} style={style}>

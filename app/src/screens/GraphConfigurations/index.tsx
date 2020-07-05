@@ -24,6 +24,8 @@ const ResourceView = styled.div`
 
 const GraphConfigurations = () => {
   const history = useHistory();
+  const [datas, setDatas] = React.useState([]);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   return (
     <Container>
@@ -48,10 +50,28 @@ const GraphConfigurations = () => {
               width: '25rem',
             }}
           >
-            <Input style={{ width: '18rem', height: '3rem' }} />
-            <Button style={{ width: '5rem', height: '3rem' }}>Preencher</Button>
+            <Input style={{ width: '18rem', height: '3rem' }} ref={inputRef} />
+            <Button
+              style={{ width: '5rem', height: '3rem' }}
+              onClick={() => {
+                const resourceToFetch = inputRef.current?.value;
+
+                fetch(String(resourceToFetch), {
+                  method: 'GET',
+                })
+                  .then((res) => res.json())
+                  .then((val) => setDatas(val.response))
+                  .catch(() => {});
+              }}
+            >
+              Preencher
+            </Button>
           </div>
-          <TextArea style={{ width: '25rem', height: '20rem' }} />
+          <TextArea
+            style={{ width: '25rem', height: '20rem' }}
+            body={datas}
+            readonly
+          />
         </ResourceView>
         <TextArea
           style={{
@@ -60,12 +80,16 @@ const GraphConfigurations = () => {
             margin: '1rem',
           }}
           readonly
+          keyType="X"
           title="Eixo X"
+          body={datas}
         />
         <TextArea
           style={{ width: '15rem', height: '25rem', margin: '1rem' }}
           readonly
           title="Eixo Y"
+          keyType="Y"
+          body={datas}
         />
       </Form>
     </Container>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
 const InputSC = styled.input`
@@ -10,8 +10,15 @@ const InputSC = styled.input`
   margin: ${(props) => props.style?.margin};
 `;
 
-const Input = ({ style }: { style?: React.CSSProperties }) => {
-  return <InputSC type="text" style={style} />;
-};
+interface Props {
+  style?: React.CSSProperties;
+}
 
+const Input = forwardRef(
+  ({ style }: Props, ref: React.Ref<HTMLInputElement>) => {
+    return <InputSC ref={ref} type="text" style={style} />;
+  }
+);
+
+Input.displayName = 'SomeInput';
 export default Input;

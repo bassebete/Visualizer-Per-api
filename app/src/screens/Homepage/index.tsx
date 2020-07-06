@@ -1,5 +1,6 @@
 import React from 'react';
 import { VictoryChart, VictoryLine, VictoryAxis } from 'victory';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { BsFillGearFill } from 'react-icons/bs';
@@ -12,11 +13,12 @@ const GraphsWrapper = styled.div`
   flex: 1;
 `;
 
-const Graph = styled.div`
+const GraphContainer = styled.div`
   width: 20rem;
-  height: 14rem;
+  height: 13rem;
   background-color: #555555;
   position: relative;
+  margin: 1rem;
 `;
 
 const Footer = styled.div`
@@ -30,9 +32,6 @@ interface Values {
   y: number;
 }
 
-type Data = Array<Values>;
-type Datas = Array<Data>;
-
 const Homepage = () => {
   const history = useHistory();
 
@@ -45,52 +44,15 @@ const Homepage = () => {
 
     verifySplashed();
   }, [history]);
-
-  const [datas] = React.useState<Datas>([
-    [
-      { x: 1, y: 2 },
-      { x: 2, y: 3 },
-      { x: 3, y: 5 },
-      { x: 4, y: 4 },
-      { x: 5, y: 7 },
-    ],
-  ]);
-
+  const resourceList = localStorage.getItem('resources')?.split('\n');
+  let i = 0;
   return (
     <Container>
       <GraphsWrapper>
-        <Graph>
-          <VictoryChart>
-            <VictoryAxis dependentAxis style={{ axis: { stroke: 'black' } }} />
-            <VictoryAxis
-              crossAxis
-              style={{
-                axis: { stroke: 'black' },
-              }}
-            />
-            <VictoryLine
-              style={{
-                border: {
-                  stroke: 'red',
-                  fill: 'blue',
-                },
-                data: {
-                  stroke: 'black',
-                },
-              }}
-              data={datas[0]}
-            />
-          </VictoryChart>
-          <BsFillGearFill
-            style={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-              cursor: 'pointer',
-            }}
-            onClick={() => history.push(constants.GRAPH_CONFIGURATIONS)}
-          />
-        </Graph>
+        {resourceList?.map((resource) => {
+          i += 1;
+          return <Graph key={resource} resource={resource} id={i} />;
+        })}
       </GraphsWrapper>
       <Footer>
         <Button
@@ -103,5 +65,64 @@ const Homepage = () => {
     </Container>
   );
 };
+
+function Graph({ resource, id }: { resource: string; id: number }) {
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    function fetchDatas() {
+      let origin = localStorage.getItem('origin');
+      if (!origin) return;
+      if (origin?.substr(origin.length - 1) !== '/') origin += '/';
+      fetch(`${origin}${resource}`, {
+        method: 'get',
+      })
+        .then((res) => res.json())
+        .then((value) => {
+          dispatch({ type: 'ADD_GRAPH', data: value });
+          return value;
+        })
+        .catch(() => {});
+    }
+
+    fetchDatas();
+  }, [dispatch, resource]);
+
+  return (
+    <GraphContainer>
+      <VictoryChart>
+        <VictoryAxis dependentAxis style={{ axis: { stroke: 'black' } }} />
+        <VictoryAxis
+          crossAxis
+          style={{
+            axis: { stroke: 'black' },
+          }}
+        />
+        <VictoryLine
+          style={{
+            border: {
+              stroke: 'red',
+              fill: 'blue',
+            },
+            data: {
+              stroke: 'black',
+            },
+          }}
+          data={[]}
+        />
+      </VictoryChart>
+      <BsFillGearFill
+        style={{
+          position: 'absolute',
+          top: 10,
+          right: 10,
+          cursor: 'pointer',
+        }}
+        onClick={() => history.push(`${constants.GRAPH_CONFIGURATIONS}${id}`)}
+      />
+    </GraphContainer>
+  );
+}
 
 export default Homepage;

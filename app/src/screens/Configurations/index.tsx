@@ -19,6 +19,19 @@ const Form = styled.div`
 const SplashConfiguration = () => {
   const history = useHistory();
 
+  const originInputRef = React.useRef<HTMLInputElement>(null);
+  const resourcesTextAreaRef = React.useRef<HTMLTextAreaElement>(null);
+
+  function handleSubmit() {
+    localStorage.setItem('splashed', 'true');
+    if (!originInputRef) return;
+    if (!resourcesTextAreaRef) return;
+    const { current: originInputElement } = originInputRef;
+    const { current: resourcesTextAreaElement } = resourcesTextAreaRef;
+    localStorage.setItem('origin', String(originInputElement?.value));
+    localStorage.setItem('resources', String(resourcesTextAreaElement?.value));
+  }
+
   return (
     <Container>
       <RiArrowGoBackLine
@@ -33,10 +46,19 @@ const SplashConfiguration = () => {
       />
       <Form>
         <p style={{ margin: '0.5rem 0 1rem 0' }}>Link da API</p>
-        <Input style={{ margin: '0 0 1rem 0' }} />
+        <Input style={{ margin: '0 0 1rem 0' }} ref={originInputRef}>
+          {localStorage.getItem('origin')}
+        </Input>
         <p style={{ margin: '0 0 1rem 0' }}>Recursos get:</p>
-        <TextArea style={{ height: '25rem', margin: '0 0 2rem 0' }} />
-        <Button style={{ margin: '1rem' }}>Confirmar</Button>
+        <TextArea
+          style={{ height: '25rem', margin: '0 0 2rem 0' }}
+          ref={resourcesTextAreaRef}
+        >
+          {localStorage.getItem('resources')}
+        </TextArea>
+        <Button style={{ margin: '1rem' }} onClick={handleSubmit}>
+          Confirmar
+        </Button>
       </Form>
     </Container>
   );

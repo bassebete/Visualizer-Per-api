@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
 const TextAreaSC = styled.textarea`
@@ -23,11 +23,43 @@ interface Props {
   title?: string;
   body?: Array<Record<string, unknown>>;
   keyType?: string;
+  children?: string | ReactNode;
 }
 
-const TextArea = ({ style, readonly, title, body, keyType }: Props) => {
-  if (readonly) {
-    if (keyType) {
+const TextArea = React.forwardRef(
+  (
+    { style, readonly, title, body, keyType, children }: Props,
+    ref: React.Ref<HTMLTextAreaElement>
+  ) => {
+    if (readonly) {
+      if (keyType) {
+        return (
+          <ContainerSC style={style}>
+            <TextAreaSC
+              style={{ width: style?.width, height: style?.height }}
+              maxLength={200}
+              readOnly
+              title={title}
+            />
+            <p style={{ position: 'absolute', left: '40%', top: '5%' }}>
+              {title}
+            </p>
+            <p
+              style={{
+                position: 'absolute',
+                left: '1rem',
+                top: '2.5rem',
+                width: `${parseInt(String(style?.width), 10) - 2}rem`,
+                height: `${parseInt(String(style?.height), 10) - 4}rem`,
+                overflow: 'auto',
+                overflowWrap: 'anywhere',
+              }}
+            >
+              <BodyRadioList body={body} keyType={keyType} />
+            </p>
+          </ContainerSC>
+        );
+      }
       return (
         <ContainerSC style={style}>
           <TextAreaSC
@@ -50,7 +82,7 @@ const TextArea = ({ style, readonly, title, body, keyType }: Props) => {
               overflowWrap: 'anywhere',
             }}
           >
-            <BodyRadioList body={body} keyType={keyType} />
+            <BodyJSONList body={body} />
           </p>
         </ContainerSC>
       );
@@ -60,36 +92,14 @@ const TextArea = ({ style, readonly, title, body, keyType }: Props) => {
         <TextAreaSC
           style={{ width: style?.width, height: style?.height }}
           maxLength={200}
-          readOnly
           title={title}
+          ref={ref}
+          defaultValue={children}
         />
-        <p style={{ position: 'absolute', left: '40%', top: '5%' }}>{title}</p>
-        <p
-          style={{
-            position: 'absolute',
-            left: '1rem',
-            top: '2.5rem',
-            width: `${parseInt(String(style?.width), 10) - 2}rem`,
-            height: `${parseInt(String(style?.height), 10) - 4}rem`,
-            overflow: 'auto',
-            overflowWrap: 'anywhere',
-          }}
-        >
-          <BodyJSONList body={body} />
-        </p>
       </ContainerSC>
     );
   }
-  return (
-    <ContainerSC style={style}>
-      <TextAreaSC
-        style={{ width: style?.width, height: style?.height }}
-        maxLength={200}
-        title={title}
-      />
-    </ContainerSC>
-  );
-};
+);
 
 function BodyJSONList({
   body,
@@ -97,13 +107,9 @@ function BodyJSONList({
   body?: Array<Record<string, unknown>>;
 }): any {
   if (!body || body?.length < 1) return null;
-  const keylist = Object.keys(body[0]);
 
-  function transformObjectInJSX(
-    obj: Record<string, unknown> | any,
-    keys: Array<string>
-  ) {
-    if (!keys) return null;
+  function transformObjectInJSX(obj: Record<string, unknown> | any) {
+    const keys = Object.keys(obj);
     return (
       <>
         &nbsp;&nbsp;
@@ -115,10 +121,7 @@ function BodyJSONList({
               <React.Fragment key={`${keyValue}`}>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 {`"${keyValue}:"`}
-                {transformObjectInJSX(
-                  obj[keyValue],
-                  Object.keys(obj[keyValue])
-                )}
+                {transformObjectInJSX(obj[keyValue])}
               </React.Fragment>
             );
           }
@@ -140,11 +143,7 @@ function BodyJSONList({
     <>
       {'{'}
       <br />
-      {body.map((value) => (
-        <span key={`${keylist[0]}`}>
-          {transformObjectInJSX(value, keylist)}
-        </span>
-      ))}
+      <span>{transformObjectInJSX(body)}</span>
       <br />
       {'}'}
     </>
@@ -159,10 +158,48 @@ function BodyRadioList({
   keyType?: string;
 }) {
   if (!body || body?.length < 1) return null;
-  const keyList = Object.keys(body[0]);
+
+  function transform(value: any) {
+    let final = '';
+
+    if (Array.isArray(value)) {
+      value.forEach((inside) => {
+        if (Object.values(inside).length > 0 && typeof inside !== 'string')
+          final += `${transform(inside)}`;
+        else final += `${inside}`;
+      });
+    } else {
+      const keyList = Object.keys(value);
+      keyList.forEach((key) => {
+        final += `${key} `;
+        if (Array.isArray(value[key])) {
+          final += `${transform(value[key])}`;
+        } else if (
+          Object.keys(value[key])?.length > 0 &&
+          typeof value[key] !== 'string'
+        ) {
+          final += `${transform(value[key])}`;
+        } else if (typeof value[key] !== 'number') {
+          final += `${value[key]} `;
+        }
+      });
+    }
+    return final;
+  }
+
+  const result = transform(body);
+  const parsedArray: Array<string> = [];
+
+  result
+    .trim()
+    .split(' ')
+    .forEach((value) => {
+      if (parsedArray.indexOf(value) === -1) parsedArray.push(value);
+    });
+
   return (
     <>
-      {keyList.map((value) => (
+      {parsedArray.map((value) => (
         <React.Fragment key={`${value}`}>
           <input type="radio" name={String(keyType)} id={value} />
           <label htmlFor={value}>{value}</label>
@@ -172,5 +209,7 @@ function BodyRadioList({
     </>
   );
 }
+
+TextArea.displayName = 'SomeTextArea';
 
 export default TextArea;

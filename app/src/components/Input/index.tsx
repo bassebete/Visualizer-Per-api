@@ -12,11 +12,14 @@ const InputSC = styled.input`
 
 interface Props {
   style?: React.CSSProperties;
+  children?: string;
 }
 
 const Input = forwardRef(
-  ({ style }: Props, ref: React.Ref<HTMLInputElement>) => {
-    return <InputSC ref={ref} type="text" style={style} />;
+  ({ style, children }: Props, ref: React.Ref<HTMLInputElement>) => {
+    return (
+      <InputSC ref={ref} type="text" style={style} defaultValue={children} />
+    );
   }
 );
 

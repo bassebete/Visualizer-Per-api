@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { RiArrowGoBackLine } from 'react-icons/ri';
 import Container from '../../components/Container';
 import Button from '../../components/Button';
@@ -26,7 +27,23 @@ const GraphConfigurations = () => {
   const history = useHistory();
   const [datas, setDatas] = React.useState([]);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const { pathname } = useLocation();
+  const selector = useSelector((state) => state.resources);
+  const id = pathname.substr(pathname.lastIndexOf('/') + 1);
 
+  const resourcesURI = localStorage.getItem('resources');
+
+  let origin = localStorage.getItem('origin');
+  if (origin?.substr(origin.length - 1 !== '/')) origin += '/';
+  const actualResource = `${origin}${resourcesURI
+    ?.split('\n')
+    .find((v, index) => String(index + 1) === id)}`;
+
+  React.useEffect(() => {
+    if (selector) {
+      setDatas(selector[id]);
+    }
+  }, [id, selector]);
   return (
     <Container>
       <RiArrowGoBackLine
@@ -50,7 +67,9 @@ const GraphConfigurations = () => {
               width: '25rem',
             }}
           >
-            <Input style={{ width: '18rem', height: '3rem' }} ref={inputRef} />
+            <Input style={{ width: '18rem', height: '3rem' }} ref={inputRef}>
+              {actualResource}
+            </Input>
             <Button
               style={{ width: '5rem', height: '3rem' }}
               onClick={() => {

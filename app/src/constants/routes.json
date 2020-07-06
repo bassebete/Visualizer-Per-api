@@ -1,6 +1,6 @@
 {
   "HOME": "/",
   "SPLASH_CONFIGURATIONS": "/splash-configurations",
-  "GRAPH_CONFIGURATIONS": "/graph-configurations",
+  "GRAPH_CONFIGURATIONS": "/graph-configurations/",
   "CONFIGURATIONS": "/configurations"
 }
